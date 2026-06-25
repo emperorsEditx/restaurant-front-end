@@ -1,11 +1,18 @@
-"use client"
-
 import Link from "next/link"
-import { useSearchParams } from "next/navigation"
 
-export default function OrderConfirmationPage() {
-  const searchParams = useSearchParams()
-  const orderId = searchParams?.get("orderId") || "N/A"
+interface OrderConfirmationPageProps {
+  searchParams: {
+    orderId?: string | string[]
+  }
+}
+
+export default function OrderConfirmationPage({ searchParams }: OrderConfirmationPageProps) {
+  const orderId =
+    typeof searchParams.orderId === "string"
+      ? searchParams.orderId
+      : Array.isArray(searchParams.orderId)
+      ? searchParams.orderId[0]
+      : "N/A"
 
   return (
     <main className="min-h-screen bg-black text-white pt-[96px]">
