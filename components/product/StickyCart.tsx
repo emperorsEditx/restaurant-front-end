@@ -6,11 +6,14 @@ import { MenuItem } from '@/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import QuantitySelector from './QuantitySelector';
 import { ShoppingBag, Heart } from 'iconoir-react';
+import { useCart } from '@/components/cart/CartProvider';
 
 export default function StickyCart({ item }: { item: MenuItem }) {
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+
+  const { addItem } = useStickyCart();
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 1024);
@@ -24,7 +27,20 @@ export default function StickyCart({ item }: { item: MenuItem }) {
   const handleAdd = () => {
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
-    // Here you would update cart state
+    try {
+      addItem({
+        productSlug: item.slug,
+        name: item.name,
+        image: item.image,
+        category: item.category,
+        basePrice: item.price,
+        quantity,
+        selectedOptions: [],
+        notes: "",
+      })
+    } catch (e) {
+      console.error('Add to cart failed', e)
+    }
   };
 
   return (
@@ -57,4 +73,13 @@ export default function StickyCart({ item }: { item: MenuItem }) {
       </motion.div>
     </AnimatePresence>
   );
+}
+
+// Hook cart functions
+function useStickyCart() {
+  try {
+    return useCart()
+  } catch (e) {
+    return { addItem: () => {}, removeItem: () => {}, state: { items: [] }, subtotal: 0 } as any
+  }
 }

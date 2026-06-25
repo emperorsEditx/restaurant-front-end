@@ -1,14 +1,14 @@
 // components/product/CustomizationPanel.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 interface CustomizationOptions {
   extras?: { name: string; price: number }[];
   removals?: string[];
 }
 
-export default function CustomizationPanel({ options }: { options?: CustomizationOptions }) {
+export default function CustomizationPanel({ options, onChange }: { options?: CustomizationOptions; onChange?: (state: { selectedExtras: string[]; removedItems: string[] }) => void }) {
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
   const [removedItems, setRemovedItems] = useState<string[]>([]);
 
@@ -16,16 +16,27 @@ export default function CustomizationPanel({ options }: { options?: Customizatio
     return null;
   }
 
+  const triggerChange = useCallback(
+    (nextSelectedExtras: string[], nextRemovedItems: string[]) => {
+      onChange?.({ selectedExtras: nextSelectedExtras, removedItems: nextRemovedItems })
+    },
+    [onChange]
+  )
+
   const toggleExtra = (name: string) => {
-    setSelectedExtras(prev =>
-      prev.includes(name) ? prev.filter(n => n !== name) : [...prev, name]
-    );
+    setSelectedExtras((prev) => {
+      const next = prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
+      triggerChange(next, removedItems)
+      return next
+    })
   };
 
   const toggleRemoval = (name: string) => {
-    setRemovedItems(prev =>
-      prev.includes(name) ? prev.filter(n => n !== name) : [...prev, name]
-    );
+    setRemovedItems((prev) => {
+      const next = prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
+      triggerChange(selectedExtras, next)
+      return next
+    })
   };
 
   return (

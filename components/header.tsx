@@ -3,6 +3,8 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Menu, Xmark, MapPin } from "iconoir-react"
+import { ShoppingBag } from "iconoir-react"
+import { useCart } from "@/components/cart/CartProvider"
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
@@ -59,6 +61,11 @@ export function Header() {
             />
           </div>
 
+          {/* Cart summary */}
+          <div className="hidden md:flex items-center gap-4">
+            <CartSummary />
+          </div>
+
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
@@ -110,5 +117,29 @@ export function Header() {
         )}
       </div>
     </header>
+  )
+}
+
+function CartSummary() {
+  const { state, subtotal } = useCart()
+  const count = state.items.reduce((s, i) => s + i.quantity, 0)
+
+  const openCart = () => {
+    try { window.dispatchEvent(new CustomEvent('open-cart')) } catch (e) {}
+  }
+
+  return (
+    <button onClick={openCart} className="flex items-center gap-3" aria-label="Open cart">
+      <div className="relative">
+        <ShoppingBag className="w-6 h-6" />
+        {count > 0 && (
+          <span className="absolute -top-2 -right-2 bg-primary text-black text-xs font-bold rounded-full px-2 py-0.5">{count}</span>
+        )}
+      </div>
+      <div className="text-sm text-foreground">
+        <div className="text-xs text-white/60">Cart</div>
+        <div className="font-bold">{subtotal.toFixed(2)}€</div>
+      </div>
+    </button>
   )
 }

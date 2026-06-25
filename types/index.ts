@@ -34,3 +34,63 @@ export interface MenuItem {
   };
   relatedSlugs?: string[];
 }
+
+// Cart types
+export interface SelectedOption {
+  name: string
+  price: number
+}
+
+export interface CartItem {
+  // unique id for cart entry (could be product slug + options hash)
+  id: string
+  productSlug: string
+  name: string
+  image?: string
+  category: MenuItem['category']
+  basePrice: number
+  quantity: number
+  selectedOptions?: SelectedOption[]
+  notes?: string
+  // timestamp when added to cart
+  addedAt: string
+}
+
+export interface Coupon {
+  code: string
+  amount: number // fixed amount discount (euros)
+  percent?: number // optional percent discount (0-100)
+}
+
+export type DeliveryMethod = "delivery" | "pickup"
+
+export interface OrderRequest {
+  customerName: string
+  phone: string
+  email?: string
+  deliveryMethod: DeliveryMethod
+  address?: string
+  city?: string
+  postalCode?: string
+  paymentMethod: "cash" | "card" | "apple_pay" | "google_pay"
+  notes?: string
+  cart: CartItem[]
+  subtotal: number
+  taxes: number
+  deliveryFee: number
+  discount: number
+  total: number
+}
+
+export interface OrderResponse {
+  orderId: string
+  status: "created"
+  message: string
+}
+
+export interface CartState {
+  items: CartItem[]
+  coupon?: Coupon | null
+  deliveryFee: number
+  taxRate: number // e.g. 0.07 for 7%
+}

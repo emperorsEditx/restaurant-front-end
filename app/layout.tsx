@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next"
 import { Oswald, Playfair_Display } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
+import CartRoot from "@/components/cart/CartRoot"
 
 const oswald = Oswald({
   subsets: ["latin"],
@@ -109,7 +110,7 @@ export default function RootLayout({
         <link rel="canonical" href="https://foodiewagon.de" />
       </head>
       <body className={`${oswald.variable} ${playfair.variable} font-sans antialiased`}>
-        {children}
+        <CartRoot>{children}</CartRoot>
         <Analytics />
       </body>
     </html>
