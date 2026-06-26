@@ -36,13 +36,13 @@ export function Footer() {
           <div>
             <h4 className="text-foreground font-bold mb-4 tracking-wide">QUICK LINKS</h4>
             <nav className="space-y-2">
-              <Link href="#menu" className="block text-muted-foreground hover:text-primary transition-colors">
+              <Link href="/#menu" className="block text-muted-foreground hover:text-primary transition-colors">
                 Menu
               </Link>
-              <Link href="#location" className="block text-muted-foreground hover:text-primary transition-colors">
+              <Link href="/#location" className="block text-muted-foreground hover:text-primary transition-colors">
                 Location
               </Link>
-              <Link href="#contact" className="block text-muted-foreground hover:text-primary transition-colors">
+              <Link href="/#contact" className="block text-muted-foreground hover:text-primary transition-colors">
                 Contact
               </Link>
             </nav>

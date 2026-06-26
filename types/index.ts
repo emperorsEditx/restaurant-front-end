@@ -15,7 +15,7 @@ export interface Nutrition {
 export interface MenuItem {
   slug: string;
   name: string;
-  category: "beef" | "chicken" | "veggie" | "drink";
+  category: "beef" | "chicken" | "veggie" | "drink" | "appetizer" | "fried-chicken" | "dip";
   price: number;
   description: string;
   spiceLevel: 0 | 1 | 2 | 3;

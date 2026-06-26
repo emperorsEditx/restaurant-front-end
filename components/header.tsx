@@ -29,19 +29,19 @@ export function Header() {
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8">
             <Link
-              href="#menu"
+              href="/#menu"
               className="text-foreground hover:text-primary transition-colors font-medium tracking-wide"
             >
               Menu
             </Link>
             <Link
-              href="#location"
+              href="/#location"
               className="text-foreground hover:text-primary transition-colors font-medium tracking-wide"
             >
               Location
             </Link>
             <Link
-              href="#contact"
+              href="/#contact"
               className="text-foreground hover:text-primary transition-colors font-medium tracking-wide"
             >
               Contact
@@ -81,21 +81,21 @@ export function Header() {
           <nav className="md:hidden py-4 border-t border-border">
             <div className="flex flex-col gap-4">
               <Link
-                href="#menu"
+                href="/#menu"
                 className="text-foreground hover:text-primary transition-colors font-medium tracking-wide py-2"
                 onClick={() => setIsOpen(false)}
               >
                 Menu
               </Link>
               <Link
-                href="#location"
+                href="/#location"
                 className="text-foreground hover:text-primary transition-colors font-medium tracking-wide py-2"
                 onClick={() => setIsOpen(false)}
               >
                 Location
               </Link>
               <Link
-                href="#contact"
+                href="/#contact"
                 className="text-foreground hover:text-primary transition-colors font-medium tracking-wide py-2"
                 onClick={() => setIsOpen(false)}
               >
