@@ -10,7 +10,10 @@ import {
   FireFlame as Flame,
   ShoppingBag,
   NavArrowRight,
+  Plus,
+  Check,
 } from "iconoir-react";
+import { useCart } from "@/components/cart/CartProvider";
 
 // Helper to generate a slug from a name
 const generateSlug = (name: string) =>
@@ -238,8 +241,42 @@ const dips = [
   { name: "Foodie Burger Sauce", price: "1,00€" },
 ];
 
+// Parse price strings like "10,50€" or "€4.50" → number
+function parsePrice(priceStr: string): number {
+  const cleaned = priceStr.replace(/[€\s]/g, "").replace(",", ".");
+  const num = parseFloat(cleaned);
+  return isNaN(num) ? 0 : num;
+}
+
 export function MenuSection() {
   const [activeCategory, setActiveCategory] = useState("beef");
+  const [addedMap, setAddedMap] = useState<Record<string, boolean>>({});
+  const { addItem } = useCart();
+
+  const flashAdded = (key: string) => {
+    setAddedMap((prev) => ({ ...prev, [key]: true }));
+    setTimeout(() => setAddedMap((prev) => ({ ...prev, [key]: false })), 1500);
+  };
+
+  const handleAddToCart = (
+    e: React.MouseEvent,
+    item: { name: string; price: string; image?: string; description?: string },
+    slug: string,
+    category: "beef" | "chicken" | "veggie" | "drink" | "appetizer" | "fried-chicken" | "dip"
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addItem({
+      productSlug: slug,
+      name: item.name,
+      image: item.image || "",
+      category,
+      basePrice: parsePrice(item.price),
+      quantity: 1,
+      selectedOptions: [],
+    });
+    flashAdded(slug);
+  };
 
   const SpiceIndicator = ({ level }: { level: number }) => {
     if (level === 0) return null;
@@ -349,6 +386,7 @@ export function MenuSection() {
 
               // Drinks – horizontal compact cards
               if (activeCategory === "drinks") {
+                const isAdded = addedMap[slug];
                 return (
                   <Link
                     key={index}
@@ -375,15 +413,32 @@ export function MenuSection() {
                           {item.description}
                         </p>
                       </div>
-                      <p className="font-black text-primary text-sm sm:text-base flex-shrink-0">
-                        {item.price}
-                      </p>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <p className="font-black text-primary text-sm sm:text-base">
+                          {item.price}
+                        </p>
+                        <button
+                          onClick={(e) => handleAddToCart(e, item, slug, "drink")}
+                          aria-label={`Add ${item.name} to cart`}
+                          className={`
+                            flex items-center justify-center w-8 h-8 rounded-full font-bold text-xs transition-all duration-300 flex-shrink-0
+                            ${isAdded
+                              ? "bg-green-500 text-white scale-110"
+                              : "bg-primary text-black hover:scale-110 hover:shadow-[0_0_12px_rgba(251,191,36,0.5)]"
+                            }
+                          `}
+                        >
+                          {isAdded ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                        </button>
+                      </div>
                     </div>
                   </Link>
                 );
               }
 
               // Burgers & Veggie – horizontal on mobile, vertical on larger screens
+              const isAdded = addedMap[slug];
+              const category = activeCategory as "beef" | "chicken" | "veggie";
               return (
                 <Link
                   key={index}
@@ -448,7 +503,23 @@ export function MenuSection() {
                           </span>
                         )}
                       </div>
-                      <NavArrowRight className="w-4 h-4 text-white/20 group-hover:text-primary group-hover:translate-x-1 transition-all duration-300" />
+                      <button
+                        onClick={(e) => handleAddToCart(e, item, slug, category)}
+                        aria-label={`Add ${item.name} to cart`}
+                        className={`
+                          flex items-center gap-1 px-2.5 py-1.5 md:px-3 md:py-2 rounded-full font-bold text-[10px] md:text-xs transition-all duration-300
+                          ${isAdded
+                            ? "bg-green-500 text-white scale-105"
+                            : "bg-primary text-black hover:scale-105 hover:shadow-[0_0_12px_rgba(251,191,36,0.5)]"
+                          }
+                        `}
+                      >
+                        {isAdded ? (
+                          <><Check className="w-3 h-3" /><span className="hidden sm:inline">Added!</span></>
+                        ) : (
+                          <><Plus className="w-3 h-3" /><span className="hidden sm:inline">Add to Cart</span></>
+                        )}
+                      </button>
                     </div>
                   </div>
                 </Link>
